@@ -8,17 +8,11 @@ import anecdoteService from "./services/anecdotes";
 
 const App = () => {
 
-  const handleVote = (anecdote) => {
+  const handleVote = anecdote => {
     console.log('vote')
   }
 
-  const result = useQuery(
-    "anecdotes", anecdoteService.getAll,
-    {
-      retry: 1
-    }
-  )
-  console.log(result);
+  const result = useQuery("anecdotes", anecdoteService.getAll, { retry: 1 });
 
   if (result.isError) {
     return (<div>anecdote service not available due to problems in server</div>);
