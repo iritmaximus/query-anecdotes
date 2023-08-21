@@ -1,3 +1,4 @@
+import { useContext } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import axios from "axios";
 
@@ -6,7 +7,12 @@ import Notification from './components/Notification'
 
 import anecdoteService from "./services/anecdotes";
 
+import NotificationContext from "./NotificationContext";
+
+
 const App = () => {
+  const [notification, dispatch] = useContext(NotificationContext);
+
   const queryClient = useQueryClient();
   const newAnecdoteMutation = useMutation(anecdoteService.update, {
     onSuccess: () => {
@@ -16,6 +22,10 @@ const App = () => {
 
   const handleVote = anecdote => {
     newAnecdoteMutation.mutate({ ...anecdote, votes: anecdote.votes + 1});
+    dispatch({ type: "ADD_NOTIFICATION", payload: `anecdote "${anecdote.content}" voted` });
+    setTimeout(() => {
+      dispatch({ type: "CLEAR_NOTIFICATION"});
+    }, 5000);
     console.log('vote');
   }
 
