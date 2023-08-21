@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import axios from "axios";
 
 import AnecdoteForm from './components/AnecdoteForm'
@@ -7,9 +7,16 @@ import Notification from './components/Notification'
 import anecdoteService from "./services/anecdotes";
 
 const App = () => {
+  const queryClient = useQueryClient();
+  const newAnecdoteMutation = useMutation(anecdoteService.update, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("anecdotes");
+    }
+  });
 
   const handleVote = anecdote => {
-    console.log('vote')
+    newAnecdoteMutation.mutate({ ...anecdote, votes: anecdote.votes + 1});
+    console.log('vote');
   }
 
   const result = useQuery("anecdotes", anecdoteService.getAll, { retry: 1 });
